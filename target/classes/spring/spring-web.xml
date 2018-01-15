@@ -23,7 +23,19 @@
     <mvc:resources mapping="/css/**" location="/static/css/" />
     <mvc:resources mapping="/images/**" location="/static/images/" />
     <mvc:resources mapping="/view/**" location="/static/view/" />
+    <mvc:resources mapping="/js/**" location="/static/js/"/>
+    <mvc:resources mapping="/fonts/**" location="/static/fonts/"/>
     <mvc:default-servlet-handler/>
+
+
+    <!-- 访问拦截  -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**/**"/>
+            <bean class="com.yskj.intercepter.LoginHandlerInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
 
     <!-- 3.配置jsp 显示ViewResolver -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

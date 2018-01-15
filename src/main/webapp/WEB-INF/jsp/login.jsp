@@ -50,7 +50,7 @@
                 cache: false,   //不用缓存
                 success: function (data) {  //请求成功，http状态码为200。返回的数据已经打包在data中了。
                     if (data.code == 1) {   //获判断json数据中的code是否为1，登录的用户名和密码匹配，通过效验，登陆成功
-                        window.location.href = "<%=request.getContextPath()%>/home";    //跳转到主页
+                        window.location.href = data.data.nextUrl;    //跳转到主页
                     } else {    //登录不成功
                         $("#msg").html("<strong>提示!</strong> "+data.msg);
                         $("#u").focus();

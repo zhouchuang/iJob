@@ -5,6 +5,8 @@ import com.yskj.domain.User;
 import com.yskj.service.serviceImpl.UserServiceImpl;
 import com.yskj.utils.GsonUtils;
 import com.yskj.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * 用户控制层
@@ -27,6 +30,7 @@ public class UserController {
     @Autowired
     private UserServiceImpl userService;    //自动载入Service对象
     private ResponseObj responseObj;
+    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
     /**
      * 为什么返回值是一个ModelAndView，ModelAndView代表一个web页面<br/>
      * setViewName是设置一个jsp页面的名称
@@ -75,7 +79,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = {
             "application/json; charset=utf-8"})
     @ResponseBody
-    public Object login(HttpServletRequest req, User user) {
+    public Object login(HttpServletRequest req, HttpServletRequest request,User user,HttpSession session) {
 //        ModelAndView mav = new ModelAndView("login");
         String result;
         if (null == user) {
@@ -101,16 +105,20 @@ public class UserController {
             result = GsonUtils.gson.toJson(responseObj);
         } else {
             if (user.getPwd().equals(user1.getPwd())) {
+                user.setNextUrl(request.getContextPath() + "/home");
                 responseObj = new ResponseObj<User>();
                 responseObj.setCode(ResponseObj.OK);
                 responseObj.setMsg(ResponseObj.OK_STR);
+                responseObj.setData(user);
+                session.setAttribute("userInfo", user);
                 result = GsonUtils.gson.toJson(responseObj);
+                logger.info(user.getLoginId()+"登录成功了");
             } else {
                 responseObj = new ResponseObj<User>();
                 responseObj.setCode(ResponseObj.FAILED);
                 responseObj.setMsg("用户密码错误");
                 result = GsonUtils.gson.toJson(responseObj);
-
+                logger.info(user.getLoginId()+"密码错误，登录失败了");
             }
         }
         return result;
