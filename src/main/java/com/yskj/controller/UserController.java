@@ -75,24 +75,22 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = {
             "application/json; charset=utf-8"})
     @ResponseBody
-    public ModelAndView login(HttpServletRequest req, User user) {
-        ModelAndView mav = new ModelAndView("home");
+    public Object login(HttpServletRequest req, User user) {
+//        ModelAndView mav = new ModelAndView("login");
         String result;
         if (null == user) {
             responseObj = new ResponseObj<User>();
             responseObj.setCode(ResponseObj.EMPUTY);
             responseObj.setMsg("登录信息不能为空");
             result = GsonUtils.gson.toJson(responseObj);
-            mav.addObject("result", result);
-            return mav; //返回页面
+            return result; //返回页面
         }
         if (StringUtils.isEmpty(user.getLoginId()) || StringUtils.isEmpty(user.getPwd())) {
             responseObj = new ResponseObj<User>();
             responseObj.setCode(ResponseObj.FAILED);
             responseObj.setMsg("用户名或密码不能为空");
             result = GsonUtils.gson.toJson(responseObj);
-            mav.addObject("result", result);
-            return mav;
+            return result;
         }
         //查找用户
         User user1 = userService.findUser(user);
@@ -112,10 +110,10 @@ public class UserController {
                 responseObj.setCode(ResponseObj.FAILED);
                 responseObj.setMsg("用户密码错误");
                 result = GsonUtils.gson.toJson(responseObj);
+
             }
         }
-        mav.addObject("result", result);
-        return mav;
+        return result;
     }
 
 }
